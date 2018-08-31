@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var List = function () {
+        this.listSize = 0;
+        this.pos = 0;
+        this.dataStore = []; // initializes an empty array to store list elements
+
+        this.toString = function () {
+            return this.dataStore;
+        }
+
+        this.find = function (element) {
+            for (var i = 0; i < this.dataStore.length; ++i) {
+                if (this.dataStore [i] === element) {
+                    return i;
+                }
+            }
+        }
+
+        this.insert = function () {
+            var insertPos = this.find(after);
+            if (insertPos > -1) {
+                this.dataStore.splice(insertPos+1, 0, element);
+                ++this.listSize;
+                return true;
+            }
+            return false;
+        }
+
+        this.append = function (element) {
+            this.dataStore[this.listSize++] = element;
+        }
+
+        this.getElement = function () {
+            return this.dataStore[this.pos];
+        }
+
+        this.remove = function (element) {
+            var foundAt = this.find(element);
+            if (foundAt > -1) {
+                this.dataStore.splice(foundAt,1);
+                --this.listSize;
+                return true;
+            }
+            return false;
+        }
+
+        this.swap = function (arr, index1, index2) {
+            var temp = arr[index1];
+            arr[index1] = arr[index2];
+            arr[index2] = temp;
+        }
+
+    }
+
+    var News = function (titleNews,contentNews,dayNews,view) {
+        this.titleNews = titleNews;
+        this.contentNews = contentNews;
+        this.dayNews = dayNews;
+        this.view = view;
+
+        this.getTitle = function () {
+            return this.titleNews;
+        }
+
+        this.getContent = function () {
+            return this.contentNews;
+        }
+
+        this.getDay = function () {
+            return this.dayNews;
+        }
+
+        this.getView = function () {
+            return this.view;
+        }
+    }
+
+    //tao mot so cac tin co san
+
+    var news1 = new News("toyota","Hang xe lon nhat the gioi",10,150);
+    var news2 = new News("honda","Hang xe tot nhat tai Viet Nam",8,100);
+    var news3 = new News("ford","Hang xe ban chay nhat tai My",20,1000);
+    var news4 = new News("volvo","Hang xe an toan nhat the gioi",25,500);
+    var news5 = new News("mercedes","Hang xe sang trong nhat the gioi",18,800);
+
+    //tao danh sach tin
+    var listNews = new List();
+    //dua mot so tin co san vao list
+    listNews.append(news1);
+    listNews.append(news2);
+    listNews.append(news3);
+    listNews.append(news4);
+    listNews.append(news5);
+
+    //hien thi tin tuc
+    function displayNews() {
+        for (i = 0; i < listNews.listSize; i++) { //hien thi
+            document.write((i + 1) + "-" + listNews.dataStore[i].getTitle() + " - " + listNews.dataStore[i].getDay() +" - " +listNews.dataStore[i].getContent() + "<br>");
+        }
+    }
+
+    //Hien thi tin tuc theo ngay
+    function displayNewsByDay() {
+        var min;
+        for (var outer = 0; outer <= listNews.dataStore.length - 2; ++outer) {
+            min = outer;
+            for (var inner = outer + 1; inner <= listNews.dataStore.length - 1; ++inner) {
+                if (listNews.dataStore[inner].getDay() < listNews.dataStore[min].getDay()) {
+                    min = inner;
+                }
+            }
+            listNews.swap(listNews.dataStore, outer, min);
+        }
+
+        for (i = 0; i < listNews.listSize; i++) { //hien thi danh sach tin theo ngay
+            document.write((i + 1) + "-" + listNews.dataStore[i].getTitle() + " - " + listNews.dataStore[i].getDay() + "<br>");
+        }
+    }
+
+    //Hien thi tin tuc theo luot xem
+    function displayNewsByView() {
+        var min;
+        for (var outer = 0; outer <= listNews.dataStore.length - 2; ++outer) {
+            min = outer;
+            for (var inner = outer + 1; inner <= listNews.dataStore.length - 1; ++inner) {
+                if (listNews.dataStore[inner].getView() < listNews.dataStore[min].getView()) {
+                    min = inner;
+                }
+            }
+            listNews.swap(listNews.dataStore, outer, min);
+        }
+
+        for (i = 0; i < listNews.listSize; i++) { //hien thi danh sach tin theo ngay
+            document.write((i + 1) + "-" + listNews.dataStore[i].getTitle() + " - " + listNews.dataStore[i].getView() + "<br>");
+        }
+    }
+
+    //Tao tin moi va them tin moi vao List
+    function addNews() { //Them 1 tin moi vao list
+        var newNews = new News(prompt("input title"),prompt("input content"),prompt("input day"),prompt("input view"));
+        listNews.append(newNews);
+    }
+
+    //Xoa 1 tin
+    function removeNews() {
+        var element = prompt("input a news to remove");
+        listNews.remove(element);
+    }
+
+    //Tim kiem mot tin theo tieu de
+     function searchNewsByTitle() {
+        var searchNews = prompt("Input news's title to search");
+        var indexRat = 0;
+        for (var i=1; i <= listNews.dataStore.length; i++) {
+            if (listNews.dataStore[i-1].getTitle() === searchNews) {
+                indexRat = i;
+                break;
+            }
+        }
+        if (indexRat > 0) {
+            alert("There are news with title " +searchNews);
+        } else
+            alert("Sorry! Not found");
+    }
+
+    //Xem 1 tin bat ky
+    function viewNews() {
+        var viewANews = prompt("Input a news to view");
+        document.write(listNews.dataStore[viewANews-1].getTitle() +"<br>" +listNews.dataStore[viewANews-1].getContent() +"<br>" +"View: " +listNews.dataStore[viewANews-1].getView() +"<br>" +"Post day: "+listNews.dataStore[viewANews-1].getDay());
+    }
+
+</script>
+<h3> News Application</h3>
+<button type="button" onclick="displayNews()">Display News </button>
+<button type="button" onclick="viewNews()">View a News </button>
+<button type="button" onclick="displayNewsByDay()">Display News by day </button>
+<button type="button" onclick="displayNewsByView()">Display News by view </button>
+<button type="button" onclick="addNews()">Add news</button>
+<button type="button" onclick="removeNews()">Remove news</button>
+<button type="button" onclick="searchNewsByTitle()">Search news</button>
+</body>
+</html>
